@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}年代別アーカイブ | {{ maid.maidName }} ({{ maid.maidNameEn }}) のめいどぶろぐ{% endblock %}
+
+{% block content %}
+<div class="archive-page-container container">
+  <!-- Page Header -->
+  <header class="archive-header">
+    <div class="header-tag">Timeline Archive</div>
+    <h1 class="archive-title">📅 年代別ブログアーカイブ</h1>
+    <p class="archive-subtitle">
+      2022年11月の初投稿から2024年7月の卒業まで、こさめが紡いだ全 {{ posts|length }} 篇の記録です。
+    </p>
+
+    <!-- Quick Year Links -->
+    <div class="year-jump-links">
+      {% for year, months in timeline.items() %}
+      <a href="#year-{{ year }}" class="jump-chip">
+        {{ year }}年 <span class="count-tag">{{ months.total }}篇</span>
+      </a>
+      {% endfor %}
+    </div>
+  </header>
+
+  <!-- Timeline Content -->
+  <div class="timeline-wrapper">
+    {% for year, year_data in timeline.items() %}
+    <section class="timeline-year-section" id="year-{{ year }}">
+      <div class="year-sticky-header">
+        <h2 class="year-heading">
+          <span class="year-star">☔</span> {{ year }}年
+          <span class="year-total-badge">{{ year_data.total }}篇</span>
+        </h2>
+      </div>
+
+      <div class="year-months-list">
+        {% for month, month_posts in year_data.months.items() %}
+        <div class="timeline-month-block">
+          <div class="month-marker">
+            <span class="month-name">{{ month }}月</span>
+            <span class="month-count">{{ month_posts|length }}篇</span>
+          </div>
+
+          <div class="month-posts-list">
+            {% for post in month_posts %}
+            <a href="{{ root_path }}posts/{{ post.id }}.html" class="timeline-post-row">
+              <span class="tp-date">{{ post.month }}/{{ post.day }}</span>
+              <span class="tp-id">#{{ post.id }}</span>
+              <span class="tp-title">{{ post.title }}</span>
+              {% if post.image_count > 0 %}
+              <span class="tp-photos">📷 {{ post.image_count }}</span>
+              {% endif %}
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

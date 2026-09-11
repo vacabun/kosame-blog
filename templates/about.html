@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}プロフィール | {{ maid.maidName }} ({{ maid.maidNameEn }}){% endblock %}
+
+{% block content %}
+<div class="about-page-container container">
+  <div class="about-card">
+    <div class="about-hero-banner">
+      <div class="about-avatar-wrap">
+        {% if maid.local_avatar %}
+          <img src="{{ root_path }}{{ maid.local_avatar }}" alt="{{ maid.maidName }}" class="about-avatar">
+        {% elif maid.maidImg %}
+          <img src="{{ maid.maidImg }}" alt="{{ maid.maidName }}" class="about-avatar">
+        {% endif %}
+        <span class="about-crown">👑</span>
+      </div>
+      <h1 class="about-name">{{ maid.maidName }}</h1>
+      <div class="about-name-sub">{{ maid.maidNameEn }} ・ {{ maid.affiliationStoreName }}</div>
+      <div class="about-badges">
+        <span class="badge">{{ maid.maidRankName }}</span>
+        <span class="badge">At-home cafe 2022-2024</span>
+      </div>
+    </div>
+
+    <!-- Intro Quote -->
+    <div class="about-quote-box">
+      <p class="about-quote-text">
+        {{ maid.introduction|nl2br }}
+      </p>
+    </div>
+
+    <!-- Profile Detail Grid -->
+    <div class="about-details-section">
+      <h2 class="about-section-heading">🎀 こさめプロフィール</h2>
+      <div class="profile-table-grid">
+        <div class="pt-item">
+          <div class="pt-label">🎂 お誕生日</div>
+          <div class="pt-value">{{ maid.birthday }} ({{ maid.birthdayEn }})</div>
+        </div>
+        <div class="pt-item">
+          <div class="pt-label">💧 出身地</div>
+          <div class="pt-value">{{ maid.birthplace }}</div>
+        </div>
+        <div class="pt-item">
+          <div class="pt-label">🩸 血液型</div>
+          <div class="pt-value">{{ maid.bloodType }}</div>
+        </div>
+        <div class="pt-item">
+          <div class="pt-label">🖤 好きな色</div>
+          <div class="pt-value">{{ maid.favoriteColor }}</div>
+        </div>
+        <div class="pt-item">
+          <div class="pt-label">🍜 好きな食べ物</div>
+          <div class="pt-value">{{ maid.favoriteFoods }}</div>
+        </div>
+        <div class="pt-item">
+          <div class="pt-label">🎨 特技</div>
+          <div class="pt-value">{{ maid.specialSkill }}</div>
+        </div>
+        <div class="pt-item">
+          <div class="pt-label">🧸 好きなもの</div>
+          <div class="pt-value">{{ maid.favoriteThings }}</div>
+        </div>
+        <div class="pt-item">
+          <div class="pt-label">🏰 所属店舗</div>
+          <div class="pt-value">{{ maid.affiliationStoreName }} ({{ maid.affiliationStoreNameEn }})</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Archive & Graduation Notice -->
+    <div class="about-archive-notice">
+      <h3>☔ このアーカイブについて</h3>
+      <p>
+        あっとほぉーむカフェ秋葉原本店5階のメイド・こさめ（Kosame）が、2022年11月21日から2024年7月15日の卒業までにお給仕・発信した全295篇のブログ記事と写真を、ご主人様・お嬢様の思い出のために永久保存した静的アーカイブサイトです。
+      </p>
+      <div class="archive-actions">
+        <a href="{{ root_path }}index.html" class="btn-primary">記事一覧を見る</a>
+        {% if maid.twitter %}
+        <a href="https://x.com/{{ maid.twitter }}" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+          公式 X (@{{ maid.twitter }}) を見る
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

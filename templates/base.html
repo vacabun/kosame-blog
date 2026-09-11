@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ maid.maidName }} ({{ maid.maidNameEn }}) のめいどぶろぐ{% endblock %}</title>
+  <meta name="description" content="{% block description %}秋葉原本店5階所属 メイド「こさめ」のブログアーカイブ (2022-2024)。全295篇の記事と写真の完全保存版。{% endblock %}">
+  
+  <!-- Favicon / Icons -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☔</text></svg>">
+  
+  <!-- Web Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Outfit:wght@400;600;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="{{ root_path }}static/css/style.css">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="theme-kosame">
+  <!-- Dynamic Background Particles/Gradients -->
+  <div class="bg-rain-container" aria-hidden="true">
+    <div class="rain-drop drop-1"></div>
+    <div class="rain-drop drop-2"></div>
+    <div class="rain-drop drop-3"></div>
+    <div class="rain-drop drop-4"></div>
+  </div>
+
+  <!-- Reading Progress Bar -->
+  <div id="readProgress" class="reading-progress-bar"></div>
+
+  <!-- Navigation Bar -->
+  <header class="site-header">
+    <div class="header-inner container">
+      <a href="{{ root_path }}index.html" class="brand-logo">
+        <span class="logo-emoji">☔</span>
+        <div class="logo-text">
+          <span class="logo-name">{{ maid.maidName }}</span>
+          <span class="logo-sub">Blog Archive</span>
+        </div>
+      </a>
+
+      <nav class="site-nav">
+        <a href="{{ root_path }}index.html" class="nav-link {% if active_page == 'home' %}active{% endif %}">
+          <span class="nav-icon">📖</span> 記事一覧
+        </a>
+        <a href="{{ root_path }}archive.html" class="nav-link {% if active_page == 'archive' %}active{% endif %}">
+          <span class="nav-icon">📅</span> 年代別
+        </a>
+        <a href="{{ root_path }}about.html" class="nav-link {% if active_page == 'about' %}active{% endif %}">
+          <span class="nav-icon">🎀</span> プロフィール
+        </a>
+        <a href="https://x.com/{{ maid.twitter }}" target="_blank" rel="noopener noreferrer" class="nav-link nav-btn-sns" title="Twitter / X @{{ maid.twitter }}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          <span>@{{ maid.twitter }}</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main class="site-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner container">
+      <div class="footer-brand">
+        <div class="footer-avatar-wrap">
+          {% if maid.local_avatar %}
+            <img src="{{ root_path }}{{ maid.local_avatar }}" alt="{{ maid.maidName }}" class="footer-avatar">
+          {% elif maid.maidImg %}
+            <img src="{{ maid.maidImg }}" alt="{{ maid.maidName }}" class="footer-avatar">
+          {% endif %}
+        </div>
+        <div class="footer-bio">
+          <div class="footer-name">{{ maid.maidName }} ({{ maid.maidNameEn }})</div>
+          <p class="footer-desc">{{ maid.introduction|truncate(80) }}</p>
+          <div class="footer-tags">
+            <span class="badge">{{ maid.affiliationStoreName }}</span>
+            <span class="badge">{{ maid.maidRankName }}</span>
+            <span class="badge">At-home cafe 2022-2024</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="copyright">
+          © {{ maid.maidName }} Blog Archive (2022 - 2024) | Source: <a href="https://www.cafe-athome.com/maid-blog/1598" target="_blank" rel="noopener noreferrer">@home cafe</a>
+        </p>
+        <p class="credit">Built with ❤️ for こさめご主人様・お嬢様</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lightbox Modal -->
+  <div id="lightboxModal" class="lightbox-modal" aria-hidden="true">
+    <div class="lightbox-backdrop"></div>
+    <div class="lightbox-content">
+      <button id="lightboxClose" class="lightbox-btn close" title="閉じる (Esc)">✕</button>
+      <img id="lightboxImg" class="lightbox-img" src="" alt="Zoomed view">
+      <div id="lightboxCaption" class="lightbox-caption"></div>
+    </div>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button id="backToTop" class="back-to-top" title="ページ最上部へ" aria-label="Back to top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+
+  <!-- Client-side Scripts -->
+  <script>
+    window.BLOG_CONFIG = {
+      rootPath: "{{ root_path }}"
+    };
+  </script>
+  <script src="{{ root_path }}static/js/main.js"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

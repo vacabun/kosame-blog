@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}{{ maid.maidName }} ({{ maid.maidNameEn }}) のめいどぶろぐ アーカイブ{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-card container">
+    <div class="hero-avatar-area">
+      <div class="avatar-ring">
+        {% if maid.local_avatar %}
+          <img src="{{ root_path }}{{ maid.local_avatar }}" alt="{{ maid.maidName }}" class="hero-avatar">
+        {% elif maid.maidImg %}
+          <img src="{{ maid.maidImg }}" alt="{{ maid.maidName }}" class="hero-avatar">
+        {% else %}
+          <div class="hero-avatar placeholder">☔</div>
+        {% endif %}
+        <span class="avatar-sparkle">✨</span>
+      </div>
+      <div class="maid-status-badge">
+        <span class="pulse-dot"></span> {{ maid.affiliationStoreName }} ・ {{ maid.maidRankName }}
+      </div>
+    </div>
+
+    <div class="hero-info">
+      <div class="hero-title-row">
+        <h1 class="hero-name">{{ maid.maidName }} <span class="hero-name-en">({{ maid.maidNameEn }})</span></h1>
+        <div class="hero-social-links">
+          {% if maid.twitter %}
+          <a href="https://x.com/{{ maid.twitter }}" target="_blank" rel="noopener noreferrer" class="social-chip chip-twitter" title="Twitter / X">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <span>@{{ maid.twitter }}</span>
+          </a>
+          {% endif %}
+          {% if maid.instagram %}
+          <a href="{{ maid.instagram }}" target="_blank" rel="noopener noreferrer" class="social-chip chip-instagram" title="Instagram">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            <span>Instagram</span>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <p class="hero-catchphrase">
+        「初めまして、きらきらあまつぶでご主人様・お嬢様のココロをうるおすこさめです☔️」
+      </p>
+
+      <div class="hero-meta-grid">
+        <div class="meta-pill">
+          <span class="meta-lbl">🎂 お誕生日</span>
+          <span class="meta-val">{{ maid.birthday }}</span>
+        </div>
+        <div class="meta-pill">
+          <span class="meta-lbl">💧 出身地</span>
+          <span class="meta-val">{{ maid.birthplace }}</span>
+        </div>
+        <div class="meta-pill">
+          <span class="meta-lbl">🖤 好きな色</span>
+          <span class="meta-val">{{ maid.favoriteColor }}</span>
+        </div>
+        <div class="meta-pill">
+          <span class="meta-lbl">🍜 好きな食べ物</span>
+          <span class="meta-val">{{ maid.favoriteFoods }}</span>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num" id="totalPostsCount">{{ posts|length }}</span>
+          <span class="stat-label">総記事数</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">{{ stats.total_images }}</span>
+          <span class="stat-label">保存写真</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">{{ stats.date_range }}</span>
+          <span class="stat-label">活動期間</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Filter & Search Toolbar -->
+<section class="toolbar-section">
+  <div class="container toolbar-box">
+    <div class="search-input-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="記事タイトルや本文キーワードで検索..." autocomplete="off">
+      <button id="searchClear" class="search-clear-btn" style="display:none;">✕</button>
+    </div>
+
+    <div class="filter-controls">
+      <div class="year-tabs" id="yearTabs">
+        <button class="year-tab active" data-year="all">全期間 ({{ posts|length }})</button>
+        {% for y, count in stats.year_counts.items() %}
+        <button class="year-tab" data-year="{{ y }}">{{ y }}年 ({{ count }})</button>
+        {% endfor %}
+      </div>
+
+      <div class="sort-selector">
+        <button id="sortToggleBtn" class="sort-btn" title="並び順を切り替え">
+          <span class="sort-icon">⇅</span> <span id="sortLabel">新しい順</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Blog Posts Grid Section -->
+<section class="posts-section">
+  <div class="container">
+    <div class="section-header-bar">
+      <h2 class="section-title">
+        <span class="title-decor"></span>
+        <span id="listTitle">最新の記事</span>
+        <span class="results-badge" id="resultsCount">({{ posts|length }}件)</span>
+      </h2>
+    </div>
+
+    <!-- Cards Container -->
+    <div class="posts-grid" id="postsGrid">
+      {% for post in posts %}
+      <article class="post-card" 
+               data-id="{{ post.id }}" 
+               data-year="{{ post.year }}" 
+               data-month="{{ post.month }}" 
+               data-date="{{ post.date }}"
+               data-title="{{ post.title|lower }}" 
+               data-excerpt="{{ post.excerpt|lower }}">
+        <a href="{{ root_path }}posts/{{ post.id }}.html" class="post-card-inner">
+          <div class="card-header-row">
+            <span class="post-id-badge">#{{ post.id }}</span>
+            <time class="post-date" datetime="{{ post.date }}">{{ post.date }}</time>
+          </div>
+
+          <h3 class="post-title">{{ post.title }}</h3>
+
+          <p class="post-excerpt">{{ post.excerpt }}</p>
+
+          <div class="card-footer-row">
+            {% if post.image_count > 0 %}
+            <span class="meta-tag tag-photo">
+              📷 {{ post.image_count }}枚
+            </span>
+            {% endif %}
+            <span class="read-more-link">
+              読む <span>→</span>
+            </span>
+          </div>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+
+    <!-- Empty State -->
+    <div id="noResults" class="empty-state" style="display: none;">
+      <div class="empty-emoji">🌧️</div>
+      <h3>見つかりませんでした</h3>
+      <p>検索キーワードや年度フィルターを変更してお試しください。</p>
+      <button id="resetSearchBtn" class="btn-primary">条件をリセット</button>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - #{{ post.id }} | {{ maid.maidName }} ({{ maid.maidNameEn }}) のめいどぶろぐ{% endblock %}
+
+{% block description %}{{ post.excerpt|truncate(120) }}{% endblock %}
+
+{% block content %}
+<article class="post-detail-container container">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb-nav">
+    <a href="{{ root_path }}index.html">ホーム</a>
+    <span class="bc-sep">›</span>
+    <a href="{{ root_path }}archive.html#year-{{ post.year }}">{{ post.year }}年</a>
+    <span class="bc-sep">›</span>
+    <span class="bc-current">#{{ post.id }}</span>
+  </nav>
+
+  <!-- Post Header -->
+  <header class="post-detail-header">
+    <div class="post-header-badges">
+      <span class="detail-id-badge">#{{ post.id }}</span>
+      <time class="detail-date" datetime="{{ post.date }}">
+        📅 {{ post.date }}
+      </time>
+      {% if post.image_count > 0 %}
+      <span class="detail-photo-badge">📷 写真 {{ post.image_count }}枚</span>
+      {% endif %}
+    </div>
+
+    <h1 class="post-detail-title">{{ post.title }}</h1>
+
+    <div class="author-bar">
+      <div class="author-info">
+        {% if maid.local_avatar %}
+          <img src="{{ root_path }}{{ maid.local_avatar }}" alt="{{ maid.maidName }}" class="author-avatar">
+        {% elif maid.maidImg %}
+          <img src="{{ maid.maidImg }}" alt="{{ maid.maidName }}" class="author-avatar">
+        {% endif %}
+        <div class="author-meta">
+          <span class="author-name">{{ maid.maidName }}</span>
+          <span class="author-role">{{ maid.affiliationStoreName }} ・ {{ maid.maidRankName }}</span>
+        </div>
+      </div>
+
+      <div class="header-share-actions">
+        <a href="https://twitter.com/intent/tweet?text={{ post.title|urlencode }}%20-%20こさめブログ%20%23{{ post.id }}&url=" 
+           target="_blank" rel="noopener noreferrer" class="share-btn share-x" title="X(Twitter)でシェア">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          ポスト
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Content Body -->
+  <div class="post-detail-card">
+    <div class="post-content-body" id="postContent">
+      {{ post.content|safe }}
+    </div>
+  </div>
+
+  <!-- Post Navigation (Prev / Next) -->
+  <nav class="post-pagination">
+    <div class="nav-direction nav-prev">
+      {% if prev_post %}
+      <a href="{{ root_path }}posts/{{ prev_post.id }}.html" class="nav-card">
+        <span class="nav-indicator">← 前の記事</span>
+        <span class="nav-title">#{{ prev_post.id }} {{ prev_post.title }}</span>
+      </a>
+      {% else %}
+      <div class="nav-card disabled">
+        <span class="nav-indicator">← 前の記事</span>
+        <span class="nav-title">これが一番最初の記事です</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="nav-center">
+      <a href="{{ root_path }}index.html" class="btn-all-posts">
+        一覧へ戻る
+      </a>
+    </div>
+
+    <div class="nav-direction nav-next">
+      {% if next_post %}
+      <a href="{{ root_path }}posts/{{ next_post.id }}.html" class="nav-card">
+        <span class="nav-indicator">次の記事 →</span>
+        <span class="nav-title">#{{ next_post.id }} {{ next_post.title }}</span>
+      </a>
+      {% else %}
+      <div class="nav-card disabled">
+        <span class="nav-indicator">次の記事 →</span>
+        <span class="nav-title">これが最後の記事です</span>
+      </div>
+      {% endif %}
+    </div>
+  </nav>
+</article>
+{% endblock %}
